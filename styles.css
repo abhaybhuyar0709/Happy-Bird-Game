@@ -1,0 +1,362 @@
+:root {
+  --bg-dark: #101a42;
+  --bg-mid: #1f3f82;
+  --card: rgba(9, 15, 47, 0.58);
+  --accent: #ffd648;
+  --accent-2: #ff8e57;
+  --text: #e8f1ff;
+  --danger: #ff5f6d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Oxanium", "Baloo 2", sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at 25% 10%, #72b8ff 0%, #4e7ff5 32%, var(--bg-mid) 63%, var(--bg-dark) 100%);
+  display: grid;
+  place-items: center;
+  overflow-x: hidden;
+}
+
+.sky-glow {
+  position: fixed;
+  width: 35vmax;
+  height: 35vmax;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.5;
+  z-index: 0;
+  animation: floatGlow 10s ease-in-out infinite;
+}
+
+.sky-glow--left {
+  background: #66e5ff;
+  left: -10vmax;
+  top: -8vmax;
+}
+
+.sky-glow--right {
+  background: #a278ff;
+  right: -8vmax;
+  bottom: -10vmax;
+  animation-delay: 2.5s;
+}
+
+.app-shell {
+  width: min(95vw, 980px);
+  position: relative;
+  z-index: 1;
+  padding: 0.8rem;
+  animation: fadeInUp 0.55s ease-out;
+}
+
+.title-wrap {
+  text-align: center;
+  margin-bottom: 0.85rem;
+}
+
+.eyebrow {
+  margin: 0;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  opacity: 0.85;
+}
+
+h1 {
+  margin: 0.2rem 0 0;
+  font-size: clamp(1.8rem, 4.4vw, 3.3rem);
+  line-height: 1;
+  text-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+h1 span {
+  display: block;
+  color: var(--accent);
+  font-size: clamp(1.1rem, 3vw, 2rem);
+}
+
+.game-card {
+  background: linear-gradient(170deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 24px 42px rgba(2, 5, 26, 0.45), 0 0 28px rgba(141, 201, 255, 0.18);
+  border-radius: 24px;
+  padding: 0.9rem;
+  backdrop-filter: blur(8px);
+}
+
+.hud {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.hud-item {
+  background: linear-gradient(160deg, rgba(8, 16, 52, 0.72), rgba(20, 29, 72, 0.5));
+  border-radius: 14px;
+  padding: 0.45rem 0.8rem;
+  min-width: 90px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 1px 8px rgba(255, 255, 255, 0.1);
+}
+
+.hud-item .label {
+  display: block;
+  font-size: 0.76rem;
+  letter-spacing: 0.05em;
+  opacity: 0.85;
+}
+
+.hud-item strong {
+  display: inline-block;
+  font-size: 1.35rem;
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  transition: transform 0.22s ease;
+}
+
+.hud-item strong.bump {
+  transform: scale(1.15);
+}
+
+.canvas-wrap {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.09), 0 16px 30px rgba(20, 28, 61, 0.35);
+  width: min(100%, calc((100dvh - 240px) * 0.65625));
+  max-width: 420px;
+  margin: 0 auto;
+  transform: translateZ(0);
+}
+
+.canvas-wrap.shake {
+  animation: shake 0.32s ease-in-out;
+}
+
+canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: linear-gradient(#85d6ff, #77aeff 55%, #86e588 56%, #4fa75d 100%);
+  touch-action: manipulation;
+}
+
+.particle-layer,
+.score-pop-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.particle,
+.score-pop {
+  position: absolute;
+  font-weight: 700;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.particle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, #ffd648 45%, #ff9f45 100%);
+  box-shadow: 0 0 10px rgba(255, 214, 72, 0.8);
+  animation-name: particleFloat;
+  animation-duration: 0.45s;
+}
+
+.score-pop {
+  color: #fff8b3;
+  font-size: 1.1rem;
+  animation-name: scoreRise;
+  animation-duration: 0.58s;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 0.2rem;
+  padding: 1rem;
+  background: linear-gradient(rgba(12, 24, 71, 0.36), rgba(12, 24, 71, 0.78));
+  backdrop-filter: blur(8px);
+  transition: opacity 0.32s ease, transform 0.32s ease;
+}
+
+.overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.02);
+}
+
+.overlay h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+  text-shadow: 0 5px 14px rgba(0, 0, 0, 0.35);
+}
+
+.overlay p {
+  margin: 0.35rem auto;
+  max-width: 34ch;
+}
+
+.tap-text {
+  margin-top: 0.2rem;
+  letter-spacing: 0.04em;
+  color: #fff8b3;
+  animation: pulseTap 1.4s ease-in-out infinite;
+}
+
+.summary {
+  background: rgba(9, 20, 64, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 0.45rem 0.75rem;
+  margin: 0.25rem auto 0.55rem;
+  min-width: 220px;
+  animation: fadeInUp 0.4s ease;
+}
+
+.new-badge {
+  color: #fff;
+  background: linear-gradient(90deg, #ff7f66, #ffcc4d);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  display: inline-block;
+  box-shadow: 0 0 14px rgba(255, 192, 69, 0.6);
+  animation: badgeBounce 0.9s ease-in-out infinite;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  color: #221a0a;
+  background: linear-gradient(180deg, #ffe99f, var(--accent));
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25), 0 0 16px rgba(255, 214, 72, 0.4);
+  transition: transform 0.16s ease, filter 0.2s ease, box-shadow 0.22s ease;
+}
+
+button:hover {
+  transform: translateY(-1px) scale(1.04);
+  filter: brightness(1.05);
+}
+
+button:active {
+  transform: translateY(2px) scale(0.98);
+}
+
+#startBtn {
+  margin: 0.2rem auto 0;
+  padding: 0.68rem 1.45rem;
+  font-size: 1.05rem;
+  animation: pulseBtn 1.7s ease-in-out infinite;
+}
+
+.controls {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.controls button {
+  flex: 1;
+  padding: 0.7rem;
+  font-size: 1rem;
+}
+
+#restartBtn {
+  background: linear-gradient(180deg, #ffc8cf, var(--danger));
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25), 0 0 20px rgba(255, 95, 109, 0.5);
+}
+
+kbd {
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+@keyframes floatGlow {
+  0%,
+  100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(18px) scale(1.07); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseTap {
+  0%,100% { opacity: 0.55; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes pulseBtn {
+  0%,100% { box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25), 0 0 12px rgba(255, 214, 72, 0.35); }
+  50% { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28), 0 0 24px rgba(255, 214, 72, 0.65); }
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-4px); }
+}
+
+@keyframes particleFloat {
+  from { opacity: 1; transform: translate(0, 0) scale(1); }
+  to { opacity: 0; transform: translate(var(--x, 0px), var(--y, -28px)) scale(0.4); }
+}
+
+@keyframes scoreRise {
+  from { opacity: 0.2; transform: translateY(0) scale(0.9); }
+  20% { opacity: 1; }
+  to { opacity: 0; transform: translateY(-38px) scale(1.15); }
+}
+
+@keyframes badgeBounce {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-2px) scale(1.06); }
+}
+
+@media (max-width: 600px) {
+  .app-shell {
+    padding: 0.35rem;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .title-wrap {
+    margin-bottom: 0.5rem;
+  }
+
+  .game-card { border-radius: 18px; padding: 0.62rem; }
+  .hud-item { min-width: unset; flex: 1; }
+
+  .canvas-wrap {
+    width: min(100%, calc((100dvh - 210px) * 0.65625));
+  }
+
+  .controls {
+    margin-top: 0.55rem;
+  }
+}
